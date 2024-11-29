@@ -1,28 +1,24 @@
 name: Create Issue from Kanban
 
 on:
-  workflow_dispatch: # This allows you to manually trigger the workflow
   issues:
     types:
       - opened # Trigger when a new issue is created
+  workflow_dispatch: # Allows manual triggering of the workflow
 
 jobs:
   create-issue:
     runs-on: ubuntu-latest
     steps:
-      - name: Create Issue Using Template
+      - name: Set up GitHub Script
         uses: actions/github-script@v6
         with:
           script: |
             const github = require('@actions/github');
             const context = github.context;
 
-            // Fetch the new issue details
-            const { payload } = context;
-            const issueNumber = payload.issue.number;
-
-            // Update the issue body with your template content
-            const updatedBody = `
+            const issueNumber = context.payload.issue.number;
+            const issueBody = `
 ## 🎯 Slack Link
 [Provide the relevant Slack thread or channel link.]
 
@@ -42,10 +38,10 @@ _As a [type of user], I want [goal/feature], so that [reason/benefit]._
 Add any other relevant information.
 `;
 
-            // Update the issue with the template content
+            // Update the issue with the issue template content
             await github.rest.issues.update({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: issueNumber,
-              body: updatedBody
+              body: issueBody
             });
