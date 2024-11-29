@@ -17,13 +17,10 @@ jobs:
             const issueNumber = context.payload.issue.number;
             const issueBody = `
 ## 🎯 Slack Link
-[Provide the relevant Slack thread or channel link.]
 
 ## 🎨 Figma Link
-[Link to the Figma design or prototype.]
 
 ## 🔗 Other Reference Links
-[Include additional reference links.]
 
 ### 🗒️ Brief Overview
 _As a [type of user], I want [goal/feature], so that [reason/benefit]._
