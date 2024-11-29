@@ -1,35 +1,51 @@
 name: Create Issue from Kanban
 
 on:
-  project: Katkinkead untitled project
+  workflow_dispatch: # This allows you to manually trigger the workflow
+  issues:
     types:
-      - created # Triggers when an item is added to the project.
+      - opened # Trigger when a new issue is created
 
 jobs:
   create-issue:
     runs-on: ubuntu-latest
     steps:
       - name: Create Issue Using Template
-        uses: actions/create-issue@v2
+        uses: actions/github-script@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          title: "New Issue from Kanban"
-          body: |
-            <!-- Template from `issue-template.md` -->
-            ## 🎯 Slack Link
-            [Provide the relevant Slack thread or channel link.]
+          script: |
+            const github = require('@actions/github');
+            const context = github.context;
 
-            ## 🎨 Figma Link
-            [Link to the Figma design or prototype.]
+            // Fetch the new issue details
+            const { payload } = context;
+            const issueNumber = payload.issue.number;
 
-            ## 🔗 Other Reference Links
-            [Include additional reference links.]
+            // Update the issue body with your template content
+            const updatedBody = `
+## 🎯 Slack Link
+[Provide the relevant Slack thread or channel link.]
 
-            ### 🗒️ Brief Overview
-            _As a [type of user], I want [goal/feature], so that [reason/benefit]._
+## 🎨 Figma Link
+[Link to the Figma design or prototype.]
 
-            ### ✅ Acceptance Criteria
-            - [ ] Define the conditions for completion.
+## 🔗 Other Reference Links
+[Include additional reference links.]
 
-            ### 📋 Additional Notes
-            Add any other relevant information.
+### 🗒️ Brief Overview
+_As a [type of user], I want [goal/feature], so that [reason/benefit]._
+
+### ✅ Acceptance Criteria
+- [ ] Define the conditions for completion.
+
+### 📋 Additional Notes
+Add any other relevant information.
+`;
+
+            // Update the issue with the template content
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              body: updatedBody
+            });
