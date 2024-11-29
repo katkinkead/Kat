@@ -1,0 +1,35 @@
+name: Create Issue from Kanban
+
+on:
+  project: Kat
+    types:
+      - created # Triggers when an item is added to the project.
+
+jobs:
+  create-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Issue Using Template
+        uses: actions/create-issue@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: "New Issue from Kanban"
+          body: |
+            <!-- Template from `issue-template.md` -->
+            ## 🎯 Slack Link
+            [Provide the relevant Slack thread or channel link.]
+
+            ## 🎨 Figma Link
+            [Link to the Figma design or prototype.]
+
+            ## 🔗 Other Reference Links
+            [Include additional reference links.]
+
+            ### 🗒️ Brief Overview
+            _As a [type of user], I want [goal/feature], so that [reason/benefit]._
+
+            ### ✅ Acceptance Criteria
+            - [ ] Define the conditions for completion.
+
+            ### 📋 Additional Notes
+            Add any other relevant information.
