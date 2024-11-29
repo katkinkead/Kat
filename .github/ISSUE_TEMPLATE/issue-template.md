@@ -1,12 +1,3 @@
----
-name: Issue template
-about: Describe this issue template's purpose here.
-title: ''
-labels: ''
-assignees: ''
-
----
-
 ### 🎯 Slack Link
 [Provide the relevant Slack thread or channel link.]
 
