@@ -10,13 +10,10 @@ jobs:
   create-issue:
     runs-on: ubuntu-latest
     steps:
-      - name: Set up GitHub Script
+      - name: Update Issue with Template Content
         uses: actions/github-script@v6
         with:
           script: |
-            const github = require('@actions/github');
-            const context = github.context;
-
             const issueNumber = context.payload.issue.number;
             const issueBody = `
 ## 🎯 Slack Link
@@ -36,9 +33,8 @@ _As a [type of user], I want [goal/feature], so that [reason/benefit]._
 
 ### 📋 Additional Notes
 Add any other relevant information.
-`;
+`.trim();
 
-            // Update the issue with the issue template content
             await github.rest.issues.update({
               owner: context.repo.owner,
               repo: context.repo.repo,
