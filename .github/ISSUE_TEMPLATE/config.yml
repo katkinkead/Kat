@@ -4,3 +4,6 @@ contact_links:
   - name: Feature Form
     url: ./ISSUE_TEMPLATE/feature-form-template.yml
     about: Use this form to submit feature requests or issue reports.
+  - name: Bug Report
+    url: ./ISSUE_TEMPLATE/bug-report.yml
+    about: Use this form to report bugs or issues in the project.
