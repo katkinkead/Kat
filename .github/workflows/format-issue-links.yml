@@ -1,3 +1,4 @@
+
 name: Format and Clean Issue Links
 
 on:
@@ -15,29 +16,24 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # Extract the issue number
           issue_number=${{ github.event.issue.number }}
-          issue_body=$(jq -r '.issue.body' <<< "${{ toJson(github.event) }}")
-          
-          # Extract Slack link
-          slack=$(echo "$issue_body" | grep '🎯 Slack Link:' | sed 's/.*🎯 Slack Link: //')
 
-          # Extract Figma link
-          figma=$(echo "$issue_body" | grep '🎨 Figma Link:' | sed 's/.*🎨 Figma Link: //')
+          # Fetch the issue body using the GitHub CLI
+          issue_body=$(gh api repos/${{ github.repository }}/issues/${issue_number} --jq '.body')
 
-          # Extract Other link
-          other=$(echo "$issue_body" | grep '🔗 Other Reference Links:' | sed 's/.*🔗 Other Reference Links: //')
+          # Debug: Output the raw issue body
+          echo "Raw issue body:"
+          echo "$issue_body"
 
-          # Properly quote the strings to handle special characters
-          slack="${slack//\"/\\\"}"
-          figma="${figma//\"/\\\"}"
-          other="${other//\"/\\\"}"
+          # Extract Slack, Figma, and Other Links
+          slack=$(echo "$issue_body" | grep -i '🎯 Slack Link:' | sed 's/.*🎯 Slack Link: //')
+          figma=$(echo "$issue_body" | grep -i '🎨 Figma Link:' | sed 's/.*🎨 Figma Link: //')
+          other=$(echo "$issue_body" | grep -i '🔗 Other Reference Links:' | sed 's/.*🔗 Other Reference Links: //')
 
-          # Initialize new body with the original content
-          new_body=$(echo "$issue_body" | sed -e "/🎯 Slack Link:.*/d" \
-                                             -e "/🎨 Figma Link:.*/d" \
-                                             -e "/🔗 Other Reference Links:.*/d")
+          # Rebuild the issue body, excluding empty fields
+          new_body=$(echo "$issue_body" | sed -e "/🎯 Slack Link:.*/d"                                              -e "/🎨 Figma Link:.*/d"                                              -e "/🔗 Other Reference Links:.*/d")
 
-          # Append links if they are non-empty
           if [[ -n "$slack" ]]; then
             new_body="$new_body\n🎯 Slack Link: $slack"
           fi
@@ -48,9 +44,9 @@ jobs:
             new_body="$new_body\n🔗 Other Reference Links: $other"
           fi
 
-          # Debugging output for validation
+          # Debug: Output the new issue body
           echo "New issue body:"
           echo "$new_body"
 
-          # Update the issue with the new body
+          # Update the issue body via GitHub CLI
           gh api repos/${{ github.repository }}/issues/${issue_number} --method PATCH --field body="$new_body"
