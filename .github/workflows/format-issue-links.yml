@@ -1,0 +1,55 @@
+
+name: Format and Clean Issue Links
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  process-links:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Format and clean issue body
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          issue_number=${{ github.event.issue.number }}
+          issue_body=$(jq -r '.issue.body' <<< "${{ toJson(github.event) }}")
+          
+          # Extract Slack fields
+          slack_label=$(echo "$issue_body" | grep '🎯 Slack Link Label:' | sed 's/.*🎯 Slack Link Label: //')
+          slack_url=$(echo "$issue_body" | grep '🎯 Slack Link URL:' | sed 's/.*🎯 Slack Link URL: //')
+          formatted_slack="[${slack_label}](${slack_url})"
+
+          # Extract Figma fields
+          figma_label=$(echo "$issue_body" | grep '🎨 Figma Link Label:' | sed 's/.*🎨 Figma Link Label: //')
+          figma_url=$(echo "$issue_body" | grep '🎨 Figma Link URL:' | sed 's/.*🎨 Figma Link URL: //')
+
+          if [[ -n "$figma_label" && -n "$figma_url" ]]; then
+            formatted_figma="
+🎨 Figma Link: [${figma_label}](${figma_url})"
+          else
+            formatted_figma=""
+          fi
+
+          # Extract Other Reference Link fields
+          other_label=$(echo "$issue_body" | grep '🔗 Other Reference Link Label:' | sed 's/.*🔗 Other Reference Link Label: //')
+          other_url=$(echo "$issue_body" | grep '🔗 Other Reference Link URL:' | sed 's/.*🔗 Other Reference Link URL: //')
+
+          if [[ -n "$other_label" && -n "$other_url" ]]; then
+            formatted_other="
+🔗 Other Reference Links: [${other_label}](${other_url})"
+          else
+            formatted_other=""
+          fi
+
+          # Construct the new body
+          new_body=$(echo "$issue_body" | sed -e "s|🎯 Slack Link Label:.*|🎯 Slack Link: $formatted_slack|"                                              -e "/🎨 Figma Link Label:.*/d"                                              -e "/🎨 Figma Link URL:.*/d"                                              -e "/🔗 Other Reference Link Label:.*/d"                                              -e "/🔗 Other Reference Link URL:.*/d")
+
+          new_body="$new_body$formatted_figma$formatted_other"
+
+          # Update the issue with the new body
+          gh api repos/${{ github.repository }}/issues/${issue_number} --method PATCH --field body="$new_body"
