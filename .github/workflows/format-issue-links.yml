@@ -27,11 +27,17 @@ jobs:
           # Extract Other link
           other=$(echo "$issue_body" | grep '🔗 Other Reference Links:' | sed 's/.*🔗 Other Reference Links: //')
 
-          # Rebuild issue body
+          # Properly quote the strings to handle special characters
+          slack="${slack//\"/\\\"}"
+          figma="${figma//\"/\\\"}"
+          other="${other//\"/\\\"}"
+
+          # Initialize new body with the original content
           new_body=$(echo "$issue_body" | sed -e "/🎯 Slack Link:.*/d" \
                                              -e "/🎨 Figma Link:.*/d" \
                                              -e "/🔗 Other Reference Links:.*/d")
 
+          # Append links if they are non-empty
           if [[ -n "$slack" ]]; then
             new_body="$new_body\n🎯 Slack Link: $slack"
           fi
@@ -41,6 +47,10 @@ jobs:
           if [[ -n "$other" ]]; then
             new_body="$new_body\n🔗 Other Reference Links: $other"
           fi
+
+          # Debugging output for validation
+          echo "New issue body:"
+          echo "$new_body"
 
           # Update the issue with the new body
           gh api repos/${{ github.repository }}/issues/${issue_number} --method PATCH --field body="$new_body"
