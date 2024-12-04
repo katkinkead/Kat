@@ -1,9 +1,9 @@
 
 name: Feature Request / Issue Report
 description: Use this form to describe user stories, acceptance criteria, and reference materials.
-title: ''
-labels: ''
-assignees: ''
+title: 'Provide a descriptive title for your issue' # Updated to a default string
+labels: [] # Updated to an empty array
+assignees: [] # Updated to an empty array
 
 body:
   - type: textarea
