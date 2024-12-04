@@ -1,6 +1,6 @@
-blank_issues_enabled: true
-contact_links: []
-issue_templates:
-  - name: Standard Issue Template
-    description: Use this template for creating detailed issues with predefined fields.
-    file: issue-template.md
+
+blank_issues_enabled: false
+contact_links:
+  - name: Feature Form
+    url: ./ISSUE_TEMPLATE/feature-form-template.yml
+    about: Use this form to submit feature requests or issue reports.

@@ -1,0 +1,53 @@
+
+name: Feature Request / Issue Report
+description: Use this form to describe user stories, acceptance criteria, and reference materials.
+title: ''
+labels: ''
+assignees: ''
+
+body:
+  - type: textarea
+    id: overview
+    attributes:
+      label: 🗒️ Brief Overview / User Story
+      description: >
+        If this issue is user-related: Provide a brief summary or user story explaining the purpose of this issue. 
+        Include the problem or opportunity being addressed and how it aligns with the project goals.
+
+        If the issue is not user-related but for the product team, technical debt, or internal tooling: Describe the 
+        purpose of the issue clearly. Include details such as its impact, why it's needed, and the specific team or 
+        stakeholder that benefits from resolving it.
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: ✅ Acceptance Criteria
+      description: >
+        Define the conditions that must be met for this issue to be considered complete. Use clear, testable criteria.
+
+  - type: input
+    id: slack_link
+    attributes:
+      label: 🎯 Slack Link
+      description: Provide the relevant Slack thread or channel link.
+      placeholder: Paste the Slack link here.
+    validations:
+      required: false
+
+  - type: input
+    id: figma_link
+    attributes:
+      label: 🎨 Figma Link
+      description: Link to the Figma design or prototype.
+      placeholder: Paste the Figma link here.
+    validations:
+      required: false
+
+  - type: input
+    id: other_links
+    attributes:
+      label: 🔗 Other Reference Links
+      description: Include any additional reference links, such as documentation or related resources.
+      placeholder: Paste other reference links here.
+    validations:
+      required: false
