@@ -1,8 +1,8 @@
 
 name: Bug Report
-description: Report a bug with detailed information to help us resolve it quickly.
-title: "[Bug]: Provide a concise and descriptive title"
-labels: ["bug"]
+description: Report a bug with detailed information to help us resolve it.
+title: "Defect: Provide a concise and descriptive title"
+labels: ["defect:bug"]
 assignees: []
 
 body:
