@@ -1,4 +1,3 @@
-
 name: Format and Clean Issue Links
 
 on:
@@ -29,31 +28,9 @@ jobs:
           echo "Raw issue body:"
           echo "$issue_body"
 
-          # Extract individual sections and remove placeholders
-          slack=$(echo "$issue_body" | grep -i '🎯 Slack Link:' | sed 's/.*🎯 Slack Link: //')
-          figma=$(echo "$issue_body" | grep -i '🎨 Figma Link:' | sed 's/.*🎨 Figma Link: //')
-          other=$(echo "$issue_body" | grep -i '🔗 Other Reference Links:' | sed 's/.*🔗 Other Reference Links: //')
-
-          # Remove placeholder fields
-          if [[ "$figma" == "_No response_" ]]; then
-            figma=""
-          fi
-          if [[ "$other" == "_No response_" ]]; then
-            other=""
-          fi
-
-          # Rebuild the issue body, excluding empty fields
-          new_body=$(echo "$issue_body" | sed -e "/🎯 Slack Link:.*/d"                                              -e "/🎨 Figma Link:.*/d"                                              -e "/🔗 Other Reference Links:.*/d")
-
-          if [[ -n "$slack" ]]; then
-            new_body="$new_body\n🎯 Slack Link: $slack"
-          fi
-          if [[ -n "$figma" ]]; then
-            new_body="$new_body\n🎨 Figma Link: $figma"
-          fi
-          if [[ -n "$other" ]]; then
-            new_body="$new_body\n🔗 Other Reference Links: $other"
-          fi
+          # Remove placeholder sections explicitly
+          new_body=$(echo "$issue_body" | sed -e '/### 🎨 Figma Link/,/^$/d' \
+                                             -e '/### 🔗 Other Reference Links/,/^$/d')
 
           # Debug: Output the new issue body
           echo "New issue body:"
