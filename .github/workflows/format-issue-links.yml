@@ -28,9 +28,10 @@ jobs:
           echo "Raw issue body:"
           echo "$issue_body"
 
-          # Remove placeholder sections explicitly
+          # Remove placeholder sections and '_No response_' explicitly
           new_body=$(echo "$issue_body" | sed -e '/### 🎨 Figma Link/,/^$/d' \
-                                             -e '/### 🔗 Other Reference Links/,/^$/d')
+                                             -e '/### 🔗 Other Reference Links/,/^$/d' \
+                                             -e 's/_No response_//g')
 
           # Debug: Output the new issue body
           echo "New issue body:"
