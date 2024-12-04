@@ -1,4 +1,3 @@
-
 name: Feature Request / Issue Report
 description: Use this form to describe user stories, acceptance criteria, and reference materials.
 title: 'Provide a descriptive title for your issue'
@@ -26,37 +25,19 @@ body:
         Define the conditions that must be met for this issue to be considered complete. Use clear, testable criteria.
 
   - type: input
-    id: slack_label
+    id: slack_link
     attributes:
-      label: 🎯 Slack Link Label
-      description: Provide a descriptive label for the Slack link.
+      label: 🎯 Slack Link
+      description: Provide a Slack link formatted as `[label](URL)`. Example: `[Discussion](https://slack.com/example)`
 
   - type: input
-    id: slack_url
+    id: figma_link
     attributes:
-      label: 🎯 Slack Link URL
-      description: Provide the URL for the Slack thread or channel.
+      label: 🎨 Figma Link
+      description: Provide a Figma link formatted as `[label](URL)`. Example: `[Design Prototype](https://figma.com/example)`
 
   - type: input
-    id: figma_label
+    id: other_link
     attributes:
-      label: 🎨 Figma Link Label
-      description: Provide a descriptive label for the Figma link.
-
-  - type: input
-    id: figma_url
-    attributes:
-      label: 🎨 Figma Link URL
-      description: Provide the URL for the Figma design or prototype.
-
-  - type: input
-    id: other_label
-    attributes:
-      label: 🔗 Other Reference Link Label
-      description: Provide a descriptive label for the additional reference link.
-
-  - type: input
-    id: other_url
-    attributes:
-      label: 🔗 Other Reference Link URL
-      description: Provide the URL for the additional reference link.
+      label: 🔗 Other Reference Links
+      description: Provide any other reference link formatted as `[label](URL)`. Example: `[Documentation](https://docs.com/example)`
