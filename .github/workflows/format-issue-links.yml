@@ -18,43 +18,28 @@ jobs:
           issue_number=${{ github.event.issue.number }}
           issue_body=$(jq -r '.issue.body' <<< "${{ toJson(github.event) }}")
           
-          # Extract Slack fields
-          slack_label=$(echo "$issue_body" | grep '🎯 Slack Link Label:' | sed 's/.*🎯 Slack Link Label: //')
-          slack_url=$(echo "$issue_body" | grep '🎯 Slack Link URL:' | sed 's/.*🎯 Slack Link URL: //')
-          formatted_slack="[${slack_label}](${slack_url})"
+          # Extract Slack link
+          slack=$(echo "$issue_body" | grep '🎯 Slack Link:' | sed 's/.*🎯 Slack Link: //')
 
-          # Extract Figma fields
-          figma_label=$(echo "$issue_body" | grep '🎨 Figma Link Label:' | sed 's/.*🎨 Figma Link Label: //')
-          figma_url=$(echo "$issue_body" | grep '🎨 Figma Link URL:' | sed 's/.*🎨 Figma Link URL: //')
+          # Extract Figma link
+          figma=$(echo "$issue_body" | grep '🎨 Figma Link:' | sed 's/.*🎨 Figma Link: //')
 
-          if [[ -n "$figma_label" && -n "$figma_url" ]]; then
-            formatted_figma="🎨 Figma Link: [${figma_label}](${figma_url})"
-          else
-            formatted_figma=""
+          # Extract Other link
+          other=$(echo "$issue_body" | grep '🔗 Other Reference Links:' | sed 's/.*🔗 Other Reference Links: //')
+
+          # Rebuild issue body
+          new_body=$(echo "$issue_body" | sed -e "/🎯 Slack Link:.*/d" \
+                                             -e "/🎨 Figma Link:.*/d" \
+                                             -e "/🔗 Other Reference Links:.*/d")
+
+          if [[ -n "$slack" ]]; then
+            new_body="$new_body\n🎯 Slack Link: $slack"
           fi
-
-          # Extract Other Reference Link fields
-          other_label=$(echo "$issue_body" | grep '🔗 Other Reference Link Label:' | sed 's/.*🔗 Other Reference Link Label: //')
-          other_url=$(echo "$issue_body" | grep '🔗 Other Reference Link URL:' | sed 's/.*🔗 Other Reference Link URL: //')
-
-          if [[ -n "$other_label" && -n "$other_url" ]]; then
-            formatted_other="🔗 Other Reference Links: [${other_label}](${other_url})"
-          else
-            formatted_other=""
+          if [[ -n "$figma" ]]; then
+            new_body="$new_body\n🎨 Figma Link: $figma"
           fi
-
-          # Construct the new body
-          new_body=$(echo "$issue_body" | sed -e "s|🎯 Slack Link Label:.*|🎯 Slack Link: $formatted_slack|" \
-                                             -e "/🎨 Figma Link Label:.*/d" \
-                                             -e "/🎨 Figma Link URL:.*/d" \
-                                             -e "/🔗 Other Reference Link Label:.*/d" \
-                                             -e "/🔗 Other Reference Link URL:.*/d")
-
-          if [[ -n "$formatted_figma" ]]; then
-            new_body="$new_body\n$formatted_figma"
-          fi
-          if [[ -n "$formatted_other" ]]; then
-            new_body="$new_body\n$formatted_other"
+          if [[ -n "$other" ]]; then
+            new_body="$new_body\n🔗 Other Reference Links: $other"
           fi
 
           # Update the issue with the new body
