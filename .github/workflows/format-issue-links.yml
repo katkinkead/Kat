@@ -1,4 +1,3 @@
-
 name: Format and Clean Issue Links
 
 on:
@@ -29,8 +28,7 @@ jobs:
           figma_url=$(echo "$issue_body" | grep '🎨 Figma Link URL:' | sed 's/.*🎨 Figma Link URL: //')
 
           if [[ -n "$figma_label" && -n "$figma_url" ]]; then
-            formatted_figma="
-🎨 Figma Link: [${figma_label}](${figma_url})"
+            formatted_figma="🎨 Figma Link: [${figma_label}](${figma_url})"
           else
             formatted_figma=""
           fi
@@ -40,16 +38,24 @@ jobs:
           other_url=$(echo "$issue_body" | grep '🔗 Other Reference Link URL:' | sed 's/.*🔗 Other Reference Link URL: //')
 
           if [[ -n "$other_label" && -n "$other_url" ]]; then
-            formatted_other="
-🔗 Other Reference Links: [${other_label}](${other_url})"
+            formatted_other="🔗 Other Reference Links: [${other_label}](${other_url})"
           else
             formatted_other=""
           fi
 
           # Construct the new body
-          new_body=$(echo "$issue_body" | sed -e "s|🎯 Slack Link Label:.*|🎯 Slack Link: $formatted_slack|"                                              -e "/🎨 Figma Link Label:.*/d"                                              -e "/🎨 Figma Link URL:.*/d"                                              -e "/🔗 Other Reference Link Label:.*/d"                                              -e "/🔗 Other Reference Link URL:.*/d")
+          new_body=$(echo "$issue_body" | sed -e "s|🎯 Slack Link Label:.*|🎯 Slack Link: $formatted_slack|" \
+                                             -e "/🎨 Figma Link Label:.*/d" \
+                                             -e "/🎨 Figma Link URL:.*/d" \
+                                             -e "/🔗 Other Reference Link Label:.*/d" \
+                                             -e "/🔗 Other Reference Link URL:.*/d")
 
-          new_body="$new_body$formatted_figma$formatted_other"
+          if [[ -n "$formatted_figma" ]]; then
+            new_body="$new_body\n$formatted_figma"
+          fi
+          if [[ -n "$formatted_other" ]]; then
+            new_body="$new_body\n$formatted_other"
+          fi
 
           # Update the issue with the new body
           gh api repos/${{ github.repository }}/issues/${issue_number} --method PATCH --field body="$new_body"
