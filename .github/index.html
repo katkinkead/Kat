@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sprint Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+  <h1>Sprint Dashboard</h1>
+  <label for="sprint-select">Select Sprint:</label>
+  <select id="sprint-select" onchange="fetchSprintData()">
+    <option value="Sprint W.50">Sprint W.50</option>
+    <option value="Sprint W.52">Sprint W.52</option>
+    <option value="Sprint W.2">Sprint W.2</option>
+    <!-- Add more sprint values here -->
+  </select>
+  <div id="report">
+    <!-- Report will be rendered here -->
+  </div>
+
+  <script>
+    const token = 'GH_TOKEN'; // Replace with your PAT
+
+    async function fetchSprintData() {
+      const sprintValue = document.getElementById('sprint-select').value;
+      const query = `
+        query($owner: String!, $repo: String!, $fieldName: String!, $fieldValue: String!) {
+          repository(owner: "your-username", name: "passkeys-development") {
+            issues(first: 100) {
+              nodes {
+                title
+                number
+                state
+                assignees(first: 10) {
+                  nodes {
+                    login
+                  }
+                }
+                projectItems(first: 10) {
+                  nodes {
+                    fieldValueByName(name: $fieldName) {
+                      ... on ProjectV2ItemFieldSingleSelectValue {
+                        name
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      `;
+
+      const variables = {
+        owner: 'katkinkead', // Replace with your GitHub username
+        repo: 'kat', // Replace with your repository name
+        fieldName: 'Sprint',
+        fieldValue: sprintValue,
+      };
+
+      const response = await axios.post(
+        'https://api.github.com/graphql',
+        { query, variables },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      const issues = response.data.data.repository.issues.nodes.filter(issue => 
+        issue.projectItems.nodes.some(
+          item => item.fieldValueByName?.name === sprintValue
+        )
+      );
+
+      const reportDiv = document.getElementById('report');
+      reportDiv.innerHTML = `
+        <h2>Report for ${sprintValue}</h2>
+        <ul>
+          ${issues.map(issue => `
+            <li>
+              [#${issue.number}]: ${issue.title} (${issue.state}) - 
+              Assignees: ${issue.assignees.nodes.map(a => a.login).join(', ') || 'None'}
+            </li>
+          `).join('')}
+        </ul>
+      `;
+    }
+
+    // Initial Fetch
+    fetchSprintData();
+  </script>
+</body>
+</html>
