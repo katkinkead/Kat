@@ -1,36 +1,34 @@
-
-name: Bug Report
+name: Bug
 description: Report a bug with detailed information to help us resolve it.
-title: "Defect: Provide a concise and descriptive title"
-labels: ["defect:bug"]
-assignees: []
+labels:
+  - defect:bug
 
 body:
   - type: textarea
     id: description
     attributes:
-      label: "🐞 Bug Description"
+      label: 🐞 Summary
       description: >
-        Describe the bug clearly and concisely. Include any relevant details 
+        Describe the bug clearly and concisely. Include any relevant details
         about the environment or context in which the bug occurred.
 
   - type: textarea
     id: steps_to_reproduce
     attributes:
-      label: "🔄 Steps to Reproduce & Actual Result"
+      label: 🔄 Steps to Reproduce & Actual Result
       description: >
-        List the exact steps to reproduce the bug. Be as detailed as possible, 
-        including specific actions, inputs, and settings. Also, describe the 
-        actual result of following these steps.
+        List the exact steps to reproduce the bug.
+        Be as detailed as possible by listing every action and/or input.
+        Also, describe the actual result of following these steps.
 
   - type: textarea
     id: expected_result
     attributes:
-      label: "✅ Expected Result"
+      label: ✅ Expected Result
       description: >
         Describe what you expected to happen when following the steps.
-        
-    - type: dropdown
+
+  - type: dropdown
     id: platform
     attributes:
       label: 🖥️ Platform
@@ -50,8 +48,12 @@ body:
   - type: textarea
     id: additional_info
     attributes:
-      label: "📎 Additional Information or Attachments"
+      label: '📎 Additional Information or Attachments'
       description: >
-        If relevant, provide additional context, screenshots, or links to 
-        files or videos. Unfortunately, file uploads are not supported 
-        directly in this form, but you can link to files hosted elsewhere.
+        Provide additional context with screenshots, videos or links.
+
+  - type: input
+    id: slack
+    attributes:
+      label: 🎯 Slack
+      description: Provide the URL for the Slack thread or channel.
