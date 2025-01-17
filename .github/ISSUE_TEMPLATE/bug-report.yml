@@ -29,6 +29,23 @@ body:
       label: "✅ Expected Result"
       description: >
         Describe what you expected to happen when following the steps.
+        
+    - type: dropdown
+    id: platform
+    attributes:
+      label: 🖥️ Platform
+      description: Select the platform where the bug occurred.
+      multiple: false
+      options:
+        - Mobile
+        - Desktop
+        - Browser Extension
+
+  - type: input
+    id: version
+    attributes:
+      label: 🔢 Version
+      description: Enter the version number (e.g., v1.0.2) where the bug occurred.
 
   - type: textarea
     id: additional_info
